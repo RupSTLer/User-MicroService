@@ -70,6 +70,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 	{
 		//jwt service that handles jwt related business logic
 		authenticationManagerBuilder.userDetailsService(jwtService).passwordEncoder(passwordEncoder());
+//		authenticationManagerBuilder.userDetailsService(jwtService);
 	}
 
 }

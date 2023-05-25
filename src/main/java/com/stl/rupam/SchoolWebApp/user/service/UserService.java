@@ -40,7 +40,8 @@ public class UserService {
 		roles.add(role);
 		user.setRole(roles);
 
-		user.setUserPassword(getEncodedPassword(user.getUserPassword()));
+//		user.setUserPassword(getEncodedPassword(user.getUserPassword()));
+		user.setUserPassword(user.getUserPassword());
 		return userRepo.save(user);
 	}
 
@@ -99,6 +100,7 @@ public class UserService {
 		adminUser.setUserLastName("admin");
 		adminUser.setUserName("admin123");
 		adminUser.setUserPassword(getEncodedPassword("Admin@pass"));
+//		adminUser.setUserPassword("Admin@pass");
 
 		Set<Role> adminRoles = new HashSet<>();
 		adminRoles.add(adminRole);
@@ -112,6 +114,7 @@ public class UserService {
 		studentUser.setUserLastName("Roy");
 		studentUser.setUserName("anu123");
 		studentUser.setUserPassword(getEncodedPassword("Anu@pass"));
+//		studentUser.setUserPassword("Anu@pass");
 
 		Set<Role> studentRoles = new HashSet<>();
 		studentRoles.add(studentRole);
@@ -125,6 +128,7 @@ public class UserService {
 		teacherUser.setUserLastName("Roy");
 		teacherUser.setUserName("sumo123");
 		teacherUser.setUserPassword(getEncodedPassword("Sumo@pass"));
+//		teacherUser.setUserPassword("Sumo@pass");
 
 		Set<Role> teacherRoles = new HashSet<>();
 		teacherRoles.add(teacherRole);
@@ -139,7 +143,7 @@ public class UserService {
 		user.setUserFirstName("Rupam");
 		user.setUserLastName("Roy");
 		user.setUserName("rup123");
-		user.setUserPassword(getEncodedPassword("Rup@pass"));
+		user.setUserPassword("Rup@pass");
 
 		Set<Role> userRoles = new HashSet<>();
 		userRoles.add(userRole);
