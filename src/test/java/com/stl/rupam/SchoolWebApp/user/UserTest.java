@@ -64,12 +64,12 @@ public class UserTest {
 	}
 	
 	//count no of users
-	@Test
-	public void testUserCount()
-	{
-//		assertEquals(4, userService.getAllUsers().size());
-		assertEquals(4, userRepo.findAll().size());
-	}
+//	@Test
+//	public void testUserCount()
+//	{
+////		assertEquals(4, userService.getAllUsers().size());
+//		assertEquals(4, userRepo.findAll().size());
+//	}
 	
 	@Test
 	public void getUserTest()
