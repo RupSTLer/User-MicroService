@@ -13,12 +13,14 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+//import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.NoOpPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 import com.stl.rupam.SchoolWebApp.user.jwt.JwtAuthenticationEntryPoint;
 import com.stl.rupam.SchoolWebApp.user.jwt.JwtRequestFilter;
+
 
 @Configuration
 @EnableWebSecurity
@@ -46,7 +48,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 	{
 		httpSecurity.cors().disable();
 		httpSecurity.csrf().disable()  //to disable CSRF attacks
-					.authorizeRequests().antMatchers("/authenticate","/registerNewUser","/createNewRole","/student/addStudent","/teacher/addTeacher").permitAll()
+					.authorizeRequests().antMatchers("/authenticate","/registerNewUser","/createNewRole","/student/addStudent","/teacher/addTeacher","/getNameOfUser/{username}", "/getAllDetailsByUserName/{username}").permitAll()
 					.antMatchers(HttpMethod.OPTIONS,"/**").permitAll()  //importance one to specified
 					.antMatchers(HttpHeaders.ALLOW).permitAll()
 					.anyRequest().authenticated()
@@ -62,7 +64,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 	@Bean
 	PasswordEncoder passwordEncoder()
 	{
-		return new BCryptPasswordEncoder();
+		return NoOpPasswordEncoder.getInstance();
 	}
 	
 	@Autowired

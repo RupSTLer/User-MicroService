@@ -38,6 +38,7 @@ public class JwtService implements UserDetailsService {
 	public JwtResponse createJwtToken(JwtRequest jwtRequest) throws Exception {
 		String userName = jwtRequest.getUserName();
 		String userPassword = jwtRequest.getUserPassword();
+		
 		authenticate(userName, userPassword);
 		
 		final UserDetails userDetails = loadUserByUsername(userName);
@@ -59,6 +60,7 @@ public class JwtService implements UserDetailsService {
 			return new org.springframework.security.core.userdetails.User(
 					user.getUserName(), 
 					user.getUserPassword(),
+//					user.getName(),
 					(Collection<? extends GrantedAuthority>) getAuthorities(user));
 		} else {
 			throw new UsernameNotFoundException("UserName is not valid" + username);

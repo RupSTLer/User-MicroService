@@ -1,7 +1,7 @@
 package com.stl.rupam.SchoolWebApp.user.jwt;
 
 public class JwtRequest {
-	//this class is responsible for taking userName and userPassword
+	//this class is responsible for taking userName, userPassword & also name
 	private String userName;
 	private String userPassword;
 	

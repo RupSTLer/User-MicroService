@@ -1,11 +1,17 @@
 package com.stl.rupam.SchoolWebApp.user.controller;
 
+import java.util.List;
+
 import javax.annotation.PostConstruct;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -45,6 +51,34 @@ public class UserController {
 	public String forUser()
 	{
 		return "This URL is only accessible to user";
+	}
+	
+	@GetMapping("/userDetails")
+	public ResponseEntity<UserDetails> getUserDetails(Authentication authentication)
+	{
+		UserDetails userDetails = (UserDetails) authentication.getPrincipal();
+		return ResponseEntity.ok(userDetails);
+	}
+	
+	@GetMapping("/getNameOfUser/{username}")
+	public ResponseEntity<String> getNameOfUser(@PathVariable String username)
+	{
+		try {
+			String name = userService.getNameOfUser(username);
+			return ResponseEntity.ok(name);
+		}
+		catch(Exception ex)
+		{
+			return ResponseEntity.notFound().build();
+		}
+	}
+	
+	@GetMapping("/getAllDetailsByUserName/{username}")
+	public User getAllDetailsByUserName(@PathVariable String username)
+	{
+		User allDetails = userService.getAllDetailsByUserName(username);
+		
+		return allDetails;
 	}
 	
 //	@PreAuthorize("hasAnyRole('Admin','User')") - to set multiple user role to access a single endpoint

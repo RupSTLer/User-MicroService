@@ -2,9 +2,11 @@ package com.stl.rupam.SchoolWebApp.user.service;
 
 import java.util.HashSet;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -22,16 +24,10 @@ public class UserService {
 	@Autowired
 	private RoleRepo roleRepo;
 
-//	@Autowired
-//	private StudentRepo studentRepo;
-//	
-//	@Autowired
-//	private TeacherRepo teacherRepo;
-
 	@Autowired
 	private PasswordEncoder passwordEncoder;
 
-//	register new user from typing new user value not hardcoded
+//	register new user
 	public User registerNewUser(User user) {
 		
 		Role role = roleRepo.findById("User").get();
@@ -48,6 +44,22 @@ public class UserService {
 	public List<User> getAllUsers() {
 		return userRepo.findAll();
 	}
+	
+	public String getNameOfUser(String username)
+	{
+		Optional<User> userOptional = userRepo.findNameUser(username);
+		
+		if(userOptional.isPresent())
+		{
+			User user = userOptional.get();
+			return user.getName();
+		}
+		else
+		{
+			throw new UsernameNotFoundException("user not found with username: " + username);
+		}
+		
+	}
 
 //	public User getUserById(Long id)
 //	{
@@ -59,7 +71,7 @@ public class UserService {
 //		return userRepo.deleteById(id);
 //	}
 
-	public List<User> getUserByUserName(String userName) {
+	public User getAllDetailsByUserName(String userName) {
 		return userRepo.findByUserName(userName);
 	}
 
@@ -96,25 +108,35 @@ public class UserService {
 		// hardcoded Admin details -
 
 		User adminUser = new User();
-		adminUser.setUserFirstName("admin");
-		adminUser.setUserLastName("admin");
+		adminUser.setName("Rupam Chakraborty");
 		adminUser.setUserName("admin123");
-		adminUser.setUserPassword(getEncodedPassword("Admin@pass"));
-//		adminUser.setUserPassword("Admin@pass");
+//		adminUser.setUserPassword(getEncodedPassword("Admin@pass"));
+		adminUser.setUserPassword("Admin@pass");
 
 		Set<Role> adminRoles = new HashSet<>();
 		adminRoles.add(adminRole);
 		adminUser.setRole(adminRoles);
 		userRepo.save(adminUser);
 
+		
+		User adminUser2 = new User();
+		adminUser2.setName("Ranjan Roy");
+		adminUser2.setUserName("admin456");
+//		adminUser.setUserPassword(getEncodedPassword("Admin2@pass"));
+		adminUser2.setUserPassword("Admin2@pass");
+
+		Set<Role> adminRoles2 = new HashSet<>();
+		adminRoles2.add(adminRole);
+		adminUser2.setRole(adminRoles2);
+		userRepo.save(adminUser2);
+		
     
 		//hardcoded student details -
 		User studentUser = new User();
-		studentUser.setUserFirstName("Anu");
-		studentUser.setUserLastName("Roy");
+		studentUser.setName("Anu Roy");
 		studentUser.setUserName("anu123");
-		studentUser.setUserPassword(getEncodedPassword("Anu@pass"));
-//		studentUser.setUserPassword("Anu@pass");
+//		studentUser.setUserPassword(getEncodedPassword("Anu@pass"));
+		studentUser.setUserPassword("Anu@pass");
 
 		Set<Role> studentRoles = new HashSet<>();
 		studentRoles.add(studentRole);
@@ -124,11 +146,10 @@ public class UserService {
 		
 		//hardcoded teacher details -
 		User teacherUser = new User();
-		teacherUser.setUserFirstName("Sumona");
-		teacherUser.setUserLastName("Roy");
+		teacherUser.setName("Sumona Roy");
 		teacherUser.setUserName("sumo123");
-		teacherUser.setUserPassword(getEncodedPassword("Sumo@pass"));
-//		teacherUser.setUserPassword("Sumo@pass");
+//		teacherUser.setUserPassword(getEncodedPassword("Sumo@pass"));
+		teacherUser.setUserPassword("Sumo@pass");
 
 		Set<Role> teacherRoles = new HashSet<>();
 		teacherRoles.add(teacherRole);
@@ -139,16 +160,16 @@ public class UserService {
 //
 //		// hardcoded User details -
 //
-		User user = new User();
-		user.setUserFirstName("Rupam");
-		user.setUserLastName("Roy");
-		user.setUserName("rup123");
-		user.setUserPassword("Rup@pass");
-
-		Set<Role> userRoles = new HashSet<>();
-		userRoles.add(userRole);
-		user.setRole(userRoles);
-		userRepo.save(user);
+//		User user = new User();
+//		user.setUserFirstName("Rupam");
+//		user.setUserLastName("Roy");
+//		user.setUserName("rup123");
+//		user.setUserPassword("Rup@pass");
+//
+//		Set<Role> userRoles = new HashSet<>();
+//		userRoles.add(userRole);
+//		user.setRole(userRoles);
+//		userRepo.save(user);
 
 		// hardcoded student details -
 
