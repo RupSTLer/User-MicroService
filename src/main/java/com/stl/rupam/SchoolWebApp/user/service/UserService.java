@@ -1,5 +1,6 @@
 package com.stl.rupam.SchoolWebApp.user.service;
 
+import java.time.LocalDate;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
@@ -37,7 +38,7 @@ public class UserService {
 		user.setRole(roles);
 
 //		user.setUserPassword(getEncodedPassword(user.getUserPassword()));
-		user.setUserPassword(user.getUserPassword());
+//		user.setUserPassword(user.getUserPassword());
 		return userRepo.save(user);
 	}
 
@@ -59,6 +60,11 @@ public class UserService {
 			throw new UsernameNotFoundException("user not found with username: " + username);
 		}
 		
+	}
+	
+	public User getUserByUserID(String userID) {
+		return userRepo.getUserByUserID(userID);
+//				.orElseThrow(() -> new ResourceNotFoundException("User not exist with userID: " + userID));
 	}
 
 //	public User getUserById(Long id)
@@ -108,10 +114,17 @@ public class UserService {
 		// hardcoded Admin details -
 
 		User adminUser = new User();
-		adminUser.setName("Rupam Chakraborty");
 		adminUser.setUserName("admin123");
-//		adminUser.setUserPassword(getEncodedPassword("Admin@pass"));
 		adminUser.setUserPassword("Admin@pass");
+		adminUser.setUserID("SMA001");
+		adminUser.setName("Rupam Chakraborty");
+		adminUser.setAge(30);
+		adminUser.setBirthDate(LocalDate.of(1992, 6, 13));
+		adminUser.setGender("Male");
+		adminUser.setAddress("Howrah");
+		adminUser.setPhoneNo("6289045253");
+		adminUser.setEmail("admin123@g.co");
+		adminUser.setDepartment("Administration");
 
 		Set<Role> adminRoles = new HashSet<>();
 		adminRoles.add(adminRole);
@@ -120,41 +133,48 @@ public class UserService {
 
 		
 		User adminUser2 = new User();
-		adminUser2.setName("Ranjan Roy");
 		adminUser2.setUserName("admin456");
-//		adminUser.setUserPassword(getEncodedPassword("Admin2@pass"));
 		adminUser2.setUserPassword("Admin2@pass");
+		adminUser2.setUserID("SMA002");
+		adminUser2.setName("Ritam Chakraborty");
+		adminUser2.setAge(30);
+		adminUser2.setBirthDate(LocalDate.of(1995, 3, 24));
+		adminUser2.setGender("Male");
+		adminUser2.setAddress("Howrah");
+		adminUser2.setPhoneNo("6289045256");
+		adminUser2.setEmail("admin456@g.co");
+		adminUser2.setDepartment("Administration");
 
 		Set<Role> adminRoles2 = new HashSet<>();
 		adminRoles2.add(adminRole);
 		adminUser2.setRole(adminRoles2);
 		userRepo.save(adminUser2);
-		
-    
-		//hardcoded student details -
-		User studentUser = new User();
-		studentUser.setName("Anu Roy");
-		studentUser.setUserName("anu123");
-//		studentUser.setUserPassword(getEncodedPassword("Anu@pass"));
-		studentUser.setUserPassword("Anu@pass");
 
-		Set<Role> studentRoles = new HashSet<>();
-		studentRoles.add(studentRole);
-		studentUser.setRole(studentRoles);
-		userRepo.save(studentUser);
 		
-		
-		//hardcoded teacher details -
-		User teacherUser = new User();
-		teacherUser.setName("Sumona Roy");
-		teacherUser.setUserName("sumo123");
-//		teacherUser.setUserPassword(getEncodedPassword("Sumo@pass"));
-		teacherUser.setUserPassword("Sumo@pass");
-
-		Set<Role> teacherRoles = new HashSet<>();
-		teacherRoles.add(teacherRole);
-		teacherUser.setRole(teacherRoles);
-		userRepo.save(teacherUser);
+//		//hardcoded student details -
+//		User studentUser = new User();
+//		studentUser.setName("Anu Roy");
+//		studentUser.setUserName("anu123");
+////		studentUser.setUserPassword(getEncodedPassword("Anu@pass"));
+//		studentUser.setUserPassword("Anu@pass");
+//
+//		Set<Role> studentRoles = new HashSet<>();
+//		studentRoles.add(studentRole);
+//		studentUser.setRole(studentRoles);
+//		userRepo.save(studentUser);
+//		
+//		
+//		//hardcoded teacher details -
+//		User teacherUser = new User();
+//		teacherUser.setName("Sumona Roy");
+//		teacherUser.setUserName("sumo123");
+////		teacherUser.setUserPassword(getEncodedPassword("Sumo@pass"));
+//		teacherUser.setUserPassword("Sumo@pass");
+//
+//		Set<Role> teacherRoles = new HashSet<>();
+//		teacherRoles.add(teacherRole);
+//		teacherUser.setRole(teacherRoles);
+//		userRepo.save(teacherUser);
 		
 		
 //

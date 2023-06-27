@@ -1,0 +1,26 @@
+version: "3.8" 
+services: 
+ user-microservice-app:
+  image: user-microservice-img
+  container_name: user-microservice-container
+  restart: unless-stopped
+  build: .
+  ports: 
+   - 8081:9001
+  environment:
+   SPRING_DATASOURCE_URL: jdbc:mysql://mysqldb:3306/school_micro?autoReconnect=true&allowPublicKeyRetrieval=true&useSSL=false&&createDatabaseIfNotExist=true
+   SPRING_DATASOURCE_USERAME: root
+   SPRING_DATASOURCE_PASSWORD: Admin@2022
+  depends_on:
+   - mysqldb
+ 
+ mysqldb:
+  image: mysql:8.0.33
+  container_name: mysqldb-container
+  environment:
+   DATABASE_HOST: mysqldb-container
+   DATABASE_PORT: 3306
+   MYSQL_DATABASE: school_micro
+   MYSQL_ROOT_USER: root
+   MYSQL_ROOT_PASSWORD: Admin@2022
+  

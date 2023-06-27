@@ -1,0 +1,113 @@
+version: "3.8" 
+
+services: 
+ user-microservice-app:
+  image: user-microservice-img
+  container_name: user-microservice-container
+  restart: unless-stopped
+  build: 
+   context: .
+   dockerfile: user.dockerfile
+  ports: 
+   - 8081:9001
+  environment:
+   SPRING_DATASOURCE_URL: jdbc:mysql://mysqldb:3306/school_micro?autoReconnect=true&allowPublicKeyRetrieval=true&useSSL=false&&createDatabaseIfNotExist=true
+   SPRING_DATASOURCE_USERAME: root
+   SPRING_DATASOURCE_PASSWORD: Admin@2022
+  depends_on:
+   - mysqldb
+ 
+ teacher-microservice-app:
+  image: teacher-microservice-img
+  container_name: teacher-microservice-container
+  restart: unless-stopped
+  build: 
+   context: .
+   dockerfile: teacher.dockerfile
+  ports: 
+   - 8082:9002
+  environment:
+   SPRING_DATASOURCE_URL: jdbc:mysql://mysqldb:3306/school_micro?autoReconnect=true&allowPublicKeyRetrieval=true&useSSL=false&&createDatabaseIfNotExist=true
+   SPRING_DATASOURCE_USERAME: root
+   SPRING_DATASOURCE_PASSWORD: Admin@2022
+  depends_on:
+   - mysqldb
+   
+ student-microservice-app:
+  image: student-microservice-img
+  container_name: student-microservice-container
+  restart: unless-stopped
+  build: 
+   context: .
+   dockerfile: student.dockerfile
+  ports: 
+   - 8083:9003
+  environment:
+   SPRING_DATASOURCE_URL: jdbc:mysql://mysqldb:3306/school_micro?autoReconnect=true&allowPublicKeyRetrieval=true&useSSL=false&&createDatabaseIfNotExist=true
+   SPRING_DATASOURCE_USERAME: root
+   SPRING_DATASOURCE_PASSWORD: Admin@2022
+  depends_on:
+   - mysqldb
+   
+ leave-microservice-app:
+  image: leave-microservice-img
+  container_name: leave-microservice-container
+  restart: unless-stopped
+  build: 
+   context: .
+   dockerfile: leave.dockerfile
+  ports: 
+   - 8084:9004
+  environment:
+   SPRING_DATASOURCE_URL: jdbc:mysql://mysqldb:3306/school_micro?autoReconnect=true&allowPublicKeyRetrieval=true&useSSL=false&&createDatabaseIfNotExist=true
+   SPRING_DATASOURCE_USERAME: root
+   SPRING_DATASOURCE_PASSWORD: Admin@2022
+  depends_on:
+   - mysqldb
+   - student-microservice-app
+   
+ fee-microservice-app:
+  image: fee-microservice-img
+  container_name: fee-microservice-container
+  restart: unless-stopped
+  build: 
+   context: .
+   dockerfile: fee.dockerfile
+  ports: 
+   - 8085:9005
+  environment:
+   SPRING_DATASOURCE_URL: jdbc:mysql://mysqldb:3306/school_micro?autoReconnect=true&allowPublicKeyRetrieval=true&useSSL=false&&createDatabaseIfNotExist=true
+   SPRING_DATASOURCE_USERAME: root
+   SPRING_DATASOURCE_PASSWORD: Admin@2022
+  depends_on:
+   - mysqldb
+   - student-microservice-app
+   
+ message-microservice-app:
+  image: message-microservice-img
+  container_name: message-microservice-container
+  restart: unless-stopped
+  build: 
+   context: .
+   dockerfile: message.dockerfile
+  ports: 
+   - 8086:9006
+  environment:
+   SPRING_DATASOURCE_URL: jdbc:mysql://mysqldb:3306/school_micro?autoReconnect=true&allowPublicKeyRetrieval=true&useSSL=false&&createDatabaseIfNotExist=true
+   SPRING_DATASOURCE_USERAME: root
+   SPRING_DATASOURCE_PASSWORD: Admin@2022
+  depends_on:
+   - mysqldb
+ 
+ mysqldb:
+  image: mysql:8.0.33
+  container_name: mysqldb-container
+  environment:
+   DATABASE_HOST: mysqldb-container
+   DATABASE_PORT: 3306
+   MYSQL_DATABASE: school_micro
+   MYSQL_ROOT_USER: root
+   MYSQL_ROOT_PASSWORD: Admin@2022
+  
+networks:
+ my-network:

@@ -1,7 +1,6 @@
 package com.stl.rupam.SchoolWebApp.user.entity;
 
 import java.time.LocalDate;
-import java.util.Collection;
 import java.util.Set;
 
 import javax.persistence.CascadeType;
@@ -27,8 +26,6 @@ import lombok.Data;
 @Entity
 @Data
 public class User {
-//	private Long id;
-//	@GeneratedValue(strategy = GenerationType.IDENTITY)
 
 	@Id
 	@NotEmpty(message = "username is mandetory")
@@ -48,8 +45,8 @@ public class User {
 	
 	@NotNull(message = "please add valid age")
 	@Positive(message = "age should be positive")
-	@Min(value = 6, message = "age must be atleast 6")
-	@Max(value = 18, message = "age must be less than 18")
+//	@Min(value = 6, message = "age must be atleast 6")
+//	@Max(value = 18, message = "age must be less than 18")
 	private int age;
 
 //	@NotNull(message = "DOB is mandetory")
@@ -72,11 +69,11 @@ public class User {
 	@Email(message = "please give valid email")
 	private String email;
 
-	@NotEmpty(message = "Class is mandetory")
+//	@NotEmpty(message = "Class is mandetory")
 	@Pattern(regexp = "[a-zA-Z]{3,}", message = "please add valid class")
 	private String classe;
 
-	@NotEmpty(message = "section is mandetory")
+//	@NotEmpty(message = "section is mandetory")
 	@Pattern(regexp = "[A-D]", message = "please add valid section")
 	private String section;
 	

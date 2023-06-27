@@ -1,10 +1,9 @@
 package com.stl.rupam.SchoolWebApp.user.controller;
 
-import java.util.List;
-
 import javax.annotation.PostConstruct;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
@@ -80,6 +79,19 @@ public class UserController {
 		
 		return allDetails;
 	}
+	
+	@GetMapping("/{userID}")
+	public User getUserByUserID(@PathVariable String userID)
+	{
+		User users = userService.getUserByUserID(userID);
+		
+		return users;
+	}
+	
+//	@GetMapping("/{userID}")
+//	public ResponseEntity<User> getUserByUserID(@PathVariable String userID) {
+//		return new ResponseEntity<User>(userService.getUserByUserID(userID), HttpStatus.OK);
+//	}
 	
 //	@PreAuthorize("hasAnyRole('Admin','User')") - to set multiple user role to access a single endpoint
 
