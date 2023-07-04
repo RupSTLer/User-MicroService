@@ -1,9 +1,9 @@
 package com.stl.rupam.SchoolWebApp.user.controller;
 
 import javax.annotation.PostConstruct;
+import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
@@ -12,15 +12,20 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.stl.rupam.SchoolWebApp.user.entity.User;
 import com.stl.rupam.SchoolWebApp.user.service.UserService;
 
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 
 @RestController
 @CrossOrigin("http://localhost:4200")
+@Api(tags = "User Service APIs", value = "User MicroService", description = "it will handle the web requests of user service")
 public class UserController {
 	
 	@Autowired
@@ -32,26 +37,21 @@ public class UserController {
 		userService.initRolesAndUser();
 	}
 	
+	@ApiOperation(value = "Register a new user into School Management System")
 	@PostMapping("/registerNewUser")
-	public User registerNewUser(@RequestBody User user)
+	public String registerNewUser(@RequestBody User user, @RequestParam String role)
 	{
-		return userService.registerNewUser(user);
+		return userService.registerNewUser(user, role);
 	}
 	
-	@GetMapping("/forAdmin")
-	@PreAuthorize("hasRole('Admin')")
-	public String forAdmin()
+	@ApiOperation(value = "Update user profile details using userID as parameter")
+	@PutMapping("/updateUserDetails/{userId}")
+	public String updateUserDetails(@Valid @PathVariable String userId, @RequestBody User user)
 	{
-		return "This URL is only accessible to admin";
+		return userService.updateUserDetails(userId,user);
 	}
-	
-	@GetMapping("/forUser")
-	@PreAuthorize("hasAnyRole('Admin','User')")
-	public String forUser()
-	{
-		return "This URL is only accessible to user";
-	}
-	
+		
+	@ApiOperation(value = "get details of currently logged in user")
 	@GetMapping("/userDetails")
 	public ResponseEntity<UserDetails> getUserDetails(Authentication authentication)
 	{
@@ -59,6 +59,7 @@ public class UserController {
 		return ResponseEntity.ok(userDetails);
 	}
 	
+	@ApiOperation(value = "get loggin in user name")
 	@GetMapping("/getNameOfUser/{username}")
 	public ResponseEntity<String> getNameOfUser(@PathVariable String username)
 	{
@@ -72,6 +73,7 @@ public class UserController {
 		}
 	}
 	
+	@ApiOperation(value = "get all details of logged in user by using username as parameter")
 	@GetMapping("/getAllDetailsByUserName/{username}")
 	public User getAllDetailsByUserName(@PathVariable String username)
 	{
@@ -80,6 +82,7 @@ public class UserController {
 		return allDetails;
 	}
 	
+	@ApiOperation(value = "get user by userID as parameter")
 	@GetMapping("/{userID}")
 	public User getUserByUserID(@PathVariable String userID)
 	{
@@ -88,11 +91,20 @@ public class UserController {
 		return users;
 	}
 	
-//	@GetMapping("/{userID}")
-//	public ResponseEntity<User> getUserByUserID(@PathVariable String userID) {
-//		return new ResponseEntity<User>(userService.getUserByUserID(userID), HttpStatus.OK);
-//	}
+	@ApiOperation(value = "check authentication for Admin")
+	@GetMapping("/forAdmin")
+	@PreAuthorize("hasRole('Admin')")
+	public String forAdmin()
+	{
+		return "This URL is only accessible to admin";
+	}
 	
-//	@PreAuthorize("hasAnyRole('Admin','User')") - to set multiple user role to access a single endpoint
-
+	@ApiOperation(value = "check authentication for user")
+	@GetMapping("/forUser")
+	@PreAuthorize("hasAnyRole('Admin','User')") //set multiple user role to access a single endpoint
+	public String forUser()
+	{
+		return "This URL is only accessible to user";
+	}
+	
 }

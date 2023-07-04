@@ -6,6 +6,7 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -49,20 +50,24 @@ public class UserServiceTest {
 		user.setName("Rupam Chakraborty");
 		user.setUserName("rups1234");
 		user.setUserPassword("rups@pass");
+		user.setBirthDate(LocalDate.of(2015, 5, 25));
+		user.setAge(10);
 		
 		Role role = new Role();
-		role.setRoleName("User");
+		role.setRoleName("Student");
 		
-		when(roleRepo.findById("User")).thenReturn(Optional.of(role));
+		String rolen = "Student";
+		
+		when(roleRepo.findById(rolen)).thenReturn(Optional.of(role));
 		
 		when(userRepo.save(user)).thenReturn(user);
 		
-		User result = userService.registerNewUser(user);
+		String result = userService.registerNewUser(user, rolen);
 		
-		assertEquals(user, result);
+		assertEquals("User registered successfully", result);
 		assertEquals(1, user.getRole().size());
 		assertTrue(user.getRole().contains(role));
-		verify(roleRepo, times(1)).findById("User");
+		verify(roleRepo, times(1)).findById("Student");
 		verify(userRepo, times(1)).save(user);
 				
 	}

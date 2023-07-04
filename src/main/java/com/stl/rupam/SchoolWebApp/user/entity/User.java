@@ -10,14 +10,14 @@ import javax.persistence.Id;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.validation.constraints.Email;
-import javax.validation.constraints.Max;
-import javax.validation.constraints.Min;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Positive;
 
 import org.springframework.format.annotation.DateTimeFormat;
+
+import io.swagger.annotations.ApiModelProperty;
 
 import javax.persistence.JoinColumn;
 
@@ -30,6 +30,7 @@ public class User {
 	@Id
 	@NotEmpty(message = "username is mandetory")
 	@Pattern(regexp = "[a-zA-Z0-9]{4,}")
+	@ApiModelProperty(value = "Username is the primary key of user model")
 	private String userName;
 	
 	@NotEmpty(message = "password is mandetory")
@@ -70,15 +71,15 @@ public class User {
 	private String email;
 
 //	@NotEmpty(message = "Class is mandetory")
-	@Pattern(regexp = "[a-zA-Z]{3,}", message = "please add valid class")
+//	@Pattern(regexp = "[a-zA-Z]{3,}", message = "please add valid class")
 	private String classe;
 
 //	@NotEmpty(message = "section is mandetory")
-	@Pattern(regexp = "[A-D]", message = "please add valid section")
+//	@Pattern(regexp = "[A-D]", message = "please add valid section")
 	private String section;
 	
-	@NotEmpty(message = "Department is mandetory")
-	@Pattern(regexp = "[a-zA-Z]{3,}", message = "please add valid department")
+//	@NotEmpty(message = "Department is mandetory")
+//	@Pattern(regexp = "[a-zA-Z]{3,}", message = "please add valid department")
 	private String department;
 	
 	
@@ -112,7 +113,7 @@ public class User {
 
 
 	// create a set collection because a user can have multiple roles, so to store multiple roles we use Set
-	// here we use Assocoation to connect two tables
+	// here we use Association to connect two tables
 	// manyToMany coz many users can have many roles
 	@ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
 	@JoinTable(name = "USER_ROLE", 

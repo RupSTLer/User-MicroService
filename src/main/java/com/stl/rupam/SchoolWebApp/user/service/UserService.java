@@ -27,19 +27,201 @@ public class UserService {
 
 	@Autowired
 	private PasswordEncoder passwordEncoder;
-
-//	register new user
-	public User registerNewUser(User user) {
+	
+//	public User registerNewUser(User user, String role) {
+//		
+//		Role selectedRole = roleRepo.findById(role).orElseThrow(() -> new RuntimeException("Role not found"));
+//		
+//		Set<Role> roles = new HashSet<>();
+//		roles.add(selectedRole);
+//		user.setRole(roles);
+//
+//		if(role.equals("Teacher"))
+//		{
+//			user.setUserID("SMT00" + (userRepo.getTeacherCount()+1));
+//			userRepo.insertTeacher(user.getUserID(), user.getUserName(), user.getUserPassword(), user.getName(), user.getAge(), user.getBirthDate(), user.getGender(), user.getAddress(), user.getPhoneNo(), user.getEmail(), user.getDepartment());			
+//		}
+//		else if(role.equals("Student"))
+//		{
+//			user.setUserID("SMS00" + (userRepo.getStudentCount()+1));
+//			userRepo.insertStudent(user.getUserID(), user.getUserName(), user.getUserPassword(), user.getName(), user.getAge(), user.getBirthDate(), user.getGender(), user.getAddress(), user.getPhoneNo(), user.getEmail(), user.getClasse(), user.getSection());			
+//		}
+//		else if(role.equals("Admin"))
+//		{
+//			user.setUserID("SMA00" + (userRepo.getAdminCount()+1));
+//		}
+//		
+//		return userRepo.save(user);
+//	}
+	
+	public String registerNewUser(User user, String role) {
 		
-		Role role = roleRepo.findById("User").get();
-
+		Role selectedRole = roleRepo.findById(role).orElseThrow(() -> new RuntimeException("Role not found"));
+		
 		Set<Role> roles = new HashSet<>();
-		roles.add(role);
+		roles.add(selectedRole);
 		user.setRole(roles);
+		
+		String u = validateUser(user);
+		
+		if(u == null)
+		{
+			if(role.equals("Teacher"))
+			{
+				String u1 = validateDOBAgeTeacher(user);
+				if(u1 == null)
+				{
+					user.setUserID("SMT00" + (userRepo.getTeacherCount()+1));
+					userRepo.insertTeacher(user.getUserID(), user.getUserName(), user.getUserPassword(), user.getName(), user.getAge(), user.getBirthDate(), user.getGender(), user.getAddress(), user.getPhoneNo(), user.getEmail(), user.getDepartment());
+					userRepo.save(user);
+				}
+				else
+				{
+					return u1;
+				}
+			}
+			else if(role.equals("Student"))
+			{
+				String u2 = validateDOBAgeStudent(user);
+				if(u2 == null)
+				{
+					user.setUserID("SMS00" + (userRepo.getStudentCount()+1));
+					userRepo.insertStudent(user.getUserID(), user.getUserName(), user.getUserPassword(), user.getName(), user.getAge(), user.getBirthDate(), user.getGender(), user.getAddress(), user.getPhoneNo(), user.getEmail(), user.getClasse(), user.getSection());
+					userRepo.save(user);
+				}
+				else
+				{
+					return u2;
+				}
+			}
+			else if(role.equals("Admin"))
+			{
+				String u3 = validateDOBAgeTeacher(user);
+				if(u3 == null)
+				{
+					user.setUserID("SMA00" + (userRepo.getAdminCount()+1));
+					userRepo.save(user);
+				}
+				else
+				{
+					return u3;
+				}
+			}
+			return "User registered successfully";
+		}
+		else
+		{
+			return u;
+		}
 
-//		user.setUserPassword(getEncodedPassword(user.getUserPassword()));
-//		user.setUserPassword(user.getUserPassword());
-		return userRepo.save(user);
+	}
+	
+	public String validateUser(User user)
+	{
+		try {
+
+			List<User> existingEmail = userRepo.findByEmail(user.getEmail());
+
+			if (!existingEmail.isEmpty()) {
+				throw new IllegalArgumentException(user.getEmail()+ " :Email already exists");
+			}
+
+			Optional<User> existingUserName = userRepo.findNameUser(user.getUserName());
+
+			if (!existingUserName.isEmpty()) {
+				throw new IllegalArgumentException(user.getUserName()+ " :Username already exists");
+			}
+
+			List<User> existingPhoneNo = userRepo.findByPhoneNo(user.getPhoneNo());
+
+			if (!existingPhoneNo.isEmpty()) {
+				throw new IllegalArgumentException(user.getPhoneNo()+ " :PhoneNo already exists");
+			}
+
+		} catch (Exception ex) {
+			return ex.getMessage();
+		}
+
+		return null;
+	}
+	
+	public String validateDOBAgeTeacher(User user)
+	{
+		LocalDate minDate = LocalDate.of(2000, 1, 1);
+		LocalDate maxDate = LocalDate.of(2020, 12, 31);
+		LocalDate birthDate = user.getBirthDate();
+
+		try {
+
+			if (birthDate.isBefore(minDate) || birthDate.isAfter(maxDate)) {
+				throw new IllegalArgumentException("Invalid Bithdate. Birthdate must be in between 2000 to 2020");
+			}
+			if(user.getAge() < 30 || user.getAge() > 50)
+			{
+				throw new IllegalArgumentException("Age must be in between 30 to 50");
+			}
+			
+		} catch (Exception ex) {
+			return ex.getMessage();
+		}
+
+		return null;
+	}
+	
+	public String validateDOBAgeStudent(User user)
+	{
+		LocalDate minDate = LocalDate.of(2010, 1, 1);
+		LocalDate maxDate = LocalDate.of(2020, 12, 31);
+		LocalDate birthDate = user.getBirthDate();
+
+		try {
+
+			if (birthDate.isBefore(minDate) || birthDate.isAfter(maxDate)) {
+				throw new IllegalArgumentException("Invalid Bithdate. Birthdate must be in between 2010 to 2020");
+			}
+			if(user.getAge() < 5 || user.getAge() > 15)
+			{
+				throw new IllegalArgumentException("Age must be in between 5 to 15");
+			}
+			
+		} catch (Exception ex) {
+			return ex.getMessage();
+		}
+
+		return null;
+	}
+	
+	public String updateUserDetails(String userId, User user)
+	{
+		
+		if(userId.startsWith("SMS"))
+		{
+//			String u1 = validateDOBAgeStudent(user);
+//			if(u1 == null)
+//			{
+				userRepo.updateStudentProfile(user.getUserID(), user.getUserName(), user.getUserPassword(), user.getName(), user.getAge(), user.getBirthDate(), user.getGender(), user.getAddress(), user.getPhoneNo(), user.getEmail(), user.getClasse(), user.getSection());							
+//			}
+//			else
+//			{
+//				return u1;
+//			}
+		}
+		else if(userId.startsWith("SMT"))
+		{
+//			String u2 = validateDOBAgeTeacher(user);
+//			if(u2 == null)
+//			{
+				userRepo.updateTeacherProfile(user.getUserID(), user.getUserName(), user.getUserPassword(), user.getName(), user.getAge(), user.getBirthDate(), user.getGender(), user.getAddress(), user.getPhoneNo(), user.getEmail(), user.getDepartment());										
+//			}
+//			else
+//			{
+//				return u2;
+//			}
+		}
+
+		userRepo.saveAndFlush(user);
+
+		return "Profile details updated";
 	}
 
 	public List<User> getAllUsers() {
@@ -59,7 +241,6 @@ public class UserService {
 		{
 			throw new UsernameNotFoundException("user not found with username: " + username);
 		}
-		
 	}
 	
 	public User getUserByUserID(String userID) {
@@ -67,36 +248,26 @@ public class UserService {
 //				.orElseThrow(() -> new ResourceNotFoundException("User not exist with userID: " + userID));
 	}
 
-//	public User getUserById(Long id)
-//	{
-//		return userRepo.findById(id).orElse(null);
-//	}
-//	
-//	public User deleteUser(Long id)
-//	{
-//		return userRepo.deleteById(id);
-//	}
-
 	public User getAllDetailsByUserName(String userName) {
 		return userRepo.findByUserName(userName);
 	}
 
 	public void initRolesAndUser() {
 		// creating roles -
-//
-//		//Admin role
+		
+		//Admin role
 		Role adminRole = new Role();
 		adminRole.setRoleName("Admin");
 		adminRole.setRoleDescription("Admin role");
 		roleRepo.save(adminRole);
-//
-//		//User Role
+
+		//User Role
 		Role userRole = new Role();
 		userRole.setRoleName("User");
 		userRole.setRoleDescription("Default role for newly created record");
 		roleRepo.save(userRole);
-//
-//		//Student role
+
+		//Student role
 		Role studentRole = new Role();
 		studentRole.setRoleName("Student");
 		studentRole.setRoleDescription("role for student");
@@ -108,9 +279,9 @@ public class UserService {
 		teacherRole.setRoleDescription("role for teacher");
 		roleRepo.save(teacherRole);
 
-//
-//		///////////////////////////////////////////////////////////////////////
-//
+
+		///////////////////////////////////////////////////////////////////////
+
 		// hardcoded Admin details -
 
 		User adminUser = new User();
@@ -150,78 +321,16 @@ public class UserService {
 		adminUser2.setRole(adminRoles2);
 		userRepo.save(adminUser2);
 
-		
-//		//hardcoded student details -
-//		User studentUser = new User();
-//		studentUser.setName("Anu Roy");
-//		studentUser.setUserName("anu123");
-////		studentUser.setUserPassword(getEncodedPassword("Anu@pass"));
-//		studentUser.setUserPassword("Anu@pass");
-//
-//		Set<Role> studentRoles = new HashSet<>();
-//		studentRoles.add(studentRole);
-//		studentUser.setRole(studentRoles);
-//		userRepo.save(studentUser);
-//		
-//		
-//		//hardcoded teacher details -
-//		User teacherUser = new User();
-//		teacherUser.setName("Sumona Roy");
-//		teacherUser.setUserName("sumo123");
-////		teacherUser.setUserPassword(getEncodedPassword("Sumo@pass"));
-//		teacherUser.setUserPassword("Sumo@pass");
-//
-//		Set<Role> teacherRoles = new HashSet<>();
-//		teacherRoles.add(teacherRole);
-//		teacherUser.setRole(teacherRoles);
-//		userRepo.save(teacherUser);
-		
-		
-//
-//		// hardcoded User details -
-//
-//		User user = new User();
-//		user.setUserFirstName("Rupam");
-//		user.setUserLastName("Roy");
-//		user.setUserName("rup123");
-//		user.setUserPassword("Rup@pass");
-//
-//		Set<Role> userRoles = new HashSet<>();
-//		userRoles.add(userRole);
-//		user.setRole(userRoles);
-//		userRepo.save(user);
-
-		// hardcoded student details -
-
-//		Student student = new Student();
-//		student.setId(1L);
-//		student.setName("Ranjan Roy");
-//		student.setUserName("ran123");
-//		student.setPassword(getEncodedPassword("ran@pass"));
-//		student.setEmail("ran@g.co");
-//
-//		Set<Role> studentRoles = new HashSet<>();
-//		studentRoles.add(studentRole);
-//		student.setRole(studentRoles);
-//		studentRepo.save(student);
-
-		// hardcoded teacher details -
-
-//		Teacher teacher = new Teacher();
-//		teacher.setName("Ritam Roy");
-//		teacher.setId(1L);
-//		teacher.setUserName("rit123");
-//		teacher.setEmail("rit@g.co");
-//		teacher.setPassword(getEncodedPassword("rit@pass"));
-//
-//		Set<Role> teacherRoles = new HashSet<>();
-//		teacherRoles.add(teacherRole);
-//		teacher.setRole(teacherRoles);
-//		teacherRepo.save(teacher);
-
+	}
+	
+	public void deleteUser(String userName)
+	{
+		userRepo.deleteById(userName);
 	}
 
 	public String getEncodedPassword(String password) {
 		return passwordEncoder.encode(password);
 	}
 }
+
+

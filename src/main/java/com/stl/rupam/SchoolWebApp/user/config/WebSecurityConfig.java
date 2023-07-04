@@ -17,6 +17,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.NoOpPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 
 import com.stl.rupam.SchoolWebApp.user.jwt.JwtAuthenticationEntryPoint;
 import com.stl.rupam.SchoolWebApp.user.jwt.JwtRequestFilter;
@@ -24,8 +25,18 @@ import com.stl.rupam.SchoolWebApp.user.jwt.JwtRequestFilter;
 
 @Configuration
 @EnableWebSecurity
+@EnableWebMvc                                        //for swagger 
 @EnableGlobalMethodSecurity(prePostEnabled = true)   //role-based auth,this annotation will take care of those methods/api endpoints to be exposed only if a user has specific role
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
+	
+	public static final String[] PUBLIC_URLS = {
+			"/v3/api-docs",
+			"/v2/api-docs",
+			"/swagger-resources/**",
+			"/swagger-ui/**",
+			"/webjars/**"
+		
+	};
 	
 	@Autowired
 	private JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
@@ -48,9 +59,10 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 	{
 		httpSecurity.cors().disable();
 		httpSecurity.csrf().disable()  //to disable CSRF attacks
-					.authorizeRequests().antMatchers("/authenticate","/registerNewUser","/createNewRole","/student/addStudent","/teacher/addTeacher","/getNameOfUser/{username}", "/getAllDetailsByUserName/{username}").permitAll()
-					.antMatchers(HttpMethod.OPTIONS,"/**").permitAll()  //importance one to specified
+					.authorizeRequests().antMatchers("/authenticate","/registerNewUser","/createNewRole","/student/addStudent","/teacher/addTeacher","/getNameOfUser/{username}", "/getAllDetailsByUserName/{username}", "/updateUserDetails/{userId}", "/{userId}").permitAll()
+					.antMatchers(HttpMethod.OPTIONS,"/**").permitAll()  //importance one to be specified
 					.antMatchers(HttpHeaders.ALLOW).permitAll()
+					.antMatchers(PUBLIC_URLS).permitAll()     //for swagger 
 					.anyRequest().authenticated()
 					.and()
 					.exceptionHandling().authenticationEntryPoint(jwtAuthenticationEntryPoint)
@@ -72,7 +84,6 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 	{
 		//jwt service that handles jwt related business logic
 		authenticationManagerBuilder.userDetailsService(jwtService).passwordEncoder(passwordEncoder());
-//		authenticationManagerBuilder.userDetailsService(jwtService);
 	}
 
 }
